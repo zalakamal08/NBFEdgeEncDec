@@ -30,6 +30,7 @@ public class ProxyReqHandler implements ProxyRequestHandler{
             String payload = JsonExtractor.extractValue(body,key);
             
             if (payload != null && !payload.equals("")) {
+//                 api.logging().logToOutput(key+" : "+payload );
 //            .replaceAll("(\\{.*?)", "\n$1\n").replaceAll(",", ",\n");
             String updated = AESGCM.Decryption(payload, NicoEncDec.KEY).replaceAll("(\\{.*?)", "\n$1\n").replaceAll("\",", "\",\n");
             body = body.replace(payload, updated);
@@ -51,9 +52,10 @@ public class ProxyReqHandler implements ProxyRequestHandler{
             String body = ir.bodyToString();
             for (String key : keys){
             
-            String payload = JsonExtractor.extractJsonValue(body,key);
+            String payload = JsonExtractor.extractJsonValue(body,key).replaceAll("\n$1\n","(\\{.*?)").replaceAll( "\",\n","\",");
             
             if (payload != null && !payload.equals("")) {
+//            api.logging().logToOutput(key+" : "+payload +"\n==================================");
             String updated = AESGCM.Encryption(payload, NicoEncDec.KEY);
 
             body = body.replace(payload, updated);

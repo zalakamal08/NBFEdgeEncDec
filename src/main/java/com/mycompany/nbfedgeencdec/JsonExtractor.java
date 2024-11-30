@@ -22,7 +22,7 @@ public class JsonExtractor {
    public static String extractJsonValue(String input, String key) {
        
         String regex =  Pattern.quote(key)+"\":\"" + "(.*?)\",\"appzillon";
-        String regex2 =  Pattern.quote(key)+"\":\"" + "(.*?)\"}";
+        String regex2 =  Pattern.quote(key)+"\":\"" + "(.*?)}\"";
         // Compile the pattern
         Pattern pattern = Pattern.compile(regex, Pattern.DOTALL); // DOTALL allows '.' to match newlines
         Matcher matcher = pattern.matcher(input);

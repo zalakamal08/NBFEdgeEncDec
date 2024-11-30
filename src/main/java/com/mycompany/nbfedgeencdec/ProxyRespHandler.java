@@ -53,16 +53,11 @@ public class ProxyRespHandler implements ProxyResponseHandler {
            
             for (String key : keys) {
                 String payload = JsonExtractor.extractJsonValue(body, key);
-                
-                
-                
 
                 if (payload != null && !payload.equals("")) {
                     
                     String updatedPayload = AESGCM.Encryption(payload, NicoEncDec.KEY);
 
-                    api.logging().logToOutput(key+" : "+payload );
-                    
                     body = body.replace(payload, updatedPayload);
                 }
             }
