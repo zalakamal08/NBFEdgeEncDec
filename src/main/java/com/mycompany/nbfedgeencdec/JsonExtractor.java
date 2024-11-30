@@ -1,28 +1,21 @@
 package com.mycompany.nbfedgeencdec;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonExtractor {
-
-    public static String extractValue(String jsonString, String key) {
-        try {
-            
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(jsonString);
-            JsonNode valueNode = rootNode.get(key);
-            if (valueNode != null) {
-                return valueNode.asText();
-            } else {
-                return null;  
-            }
-        } catch (JsonProcessingException e) {
-            return null;  
+   
+  public static String extractValue(String input, String key) {
+         
+        String regex = String.format("(?i)\"%s\"\\s*:\\s*\"([^\"]*)\"", key);
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+ 
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return null; 
         }
     }
-
-   
-   
 }

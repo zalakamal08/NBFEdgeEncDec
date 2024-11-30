@@ -1,4 +1,8 @@
-com\mycompany\nbfedgeencdec\ProxyReqHandler.class
+com\mycompany\nbfedgeencdec\NicoEncDec.class
 com\mycompany\nbfedgeencdec\JsonExtractor.class
-com\mycompany\nbfedgeencdec\NBFEdgeEncDec.class
+com\mycompany\nbfedgeencdec\NicoEncDecUI.class
 com\mycompany\nbfedgeencdec\ProxyRespHandler.class
+com\mycompany\nbfedgeencdec\ProxyReqHandler.class
+com\mycompany\nbfedgeencdec\AESGCM.class
+com\mycompany\nbfedgeencdec\NicoEncDecUI$1.class
+com\mycompany\nbfedgeencdec\Test.class
