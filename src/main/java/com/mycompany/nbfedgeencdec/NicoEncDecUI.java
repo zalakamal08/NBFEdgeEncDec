@@ -1,6 +1,6 @@
 package com.mycompany.nbfedgeencdec;
  
- import burp.api.montoya.MontoyaApi;
+import burp.api.montoya.MontoyaApi;
 
 import javax.swing.*;
 import java.awt.*;

@@ -6,20 +6,19 @@ import burp.api.montoya.proxy.http.InterceptedRequest;
 import burp.api.montoya.proxy.http.ProxyRequestHandler;
 import burp.api.montoya.proxy.http.ProxyRequestReceivedAction;
 import burp.api.montoya.proxy.http.ProxyRequestToBeSentAction;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public class ProxyReqHandler implements ProxyRequestHandler{
     public MontoyaApi api;
-    public String key1 ="appzillonHeader";
-    public String key2 ="appzillonBody";
+    private List<String> keys;
     
     
-    public ProxyReqHandler(MontoyaApi api){
+    public ProxyReqHandler(MontoyaApi api, List<String> keys){
         this.api=api;
+        this.keys=keys;
     }
     
     @Override
@@ -27,24 +26,16 @@ public class ProxyReqHandler implements ProxyRequestHandler{
         
         try {
             String body = ir.bodyToString();
+             for (String key : keys){
+            String payload = JsonExtractor.extractValue(body,key);
             
-            String payload1 = JsonExtractor.extractValue(body,key1);
-            String payload2 = JsonExtractor.extractValue(body,key2);
-            
-            String updated1 = AESGCM.Decryption(payload1, NicoEncDec.KEY) ;
-            String updated2 = AESGCM.Decryption(payload2, NicoEncDec.KEY);
-            
-                     
-            String body2 = body.replace(payload1, updated1);
-            body2 = body2.replace(payload2, updated2);
-          
-            
-            ObjectMapper objectMapper = new ObjectMapper();
-            Object json = objectMapper.readTree(body2.substring(1,-1)); // Convert string to JSON tree
-
-            String prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
-                       
-            HttpRequest request = ir.withBody(prettyJson);
+            if (payload != null && !payload.equals("")) {
+//            .replaceAll("(\\{.*?)", "\n$1\n").replaceAll(",", ",\n");
+            String updated = AESGCM.Decryption(payload, NicoEncDec.KEY).replaceAll("(\\{.*?)", "\n$1\n").replaceAll("\",", "\",\n");
+            body = body.replace(payload, updated);
+            }
+             }
+            HttpRequest request = ir.withBody(body);
             
             return  ProxyRequestReceivedAction.continueWith(request) ;
         } catch (Exception ex) {
@@ -58,18 +49,16 @@ public class ProxyReqHandler implements ProxyRequestHandler{
         
         try {
             String body = ir.bodyToString();
+            for (String key : keys){
             
-            String payload3 = JsonExtractor.extractValue(body,key1);
-            String payload4 = JsonExtractor.extractValue(body,key2);
+            String payload = JsonExtractor.extractJsonValue(body,key);
             
-            
-            String updated3 = AESGCM.Encryption(payload3, NicoEncDec.KEY);
-            String updated4 = AESGCM.Encryption(payload4, NicoEncDec.KEY);
-            
-            
-            String body2 = body.replace(payload3, updated3);
-            body2 = body2.replace(payload4, updated4);
-            HttpRequest request = ir.withBody(body2);
+            if (payload != null && !payload.equals("")) {
+            String updated = AESGCM.Encryption(payload, NicoEncDec.KEY);
+
+            body = body.replace(payload, updated);
+            }}
+            HttpRequest request = ir.withBody(body);
             
             return ProxyRequestToBeSentAction.continueWith(request);
         } catch (Exception ex) {
